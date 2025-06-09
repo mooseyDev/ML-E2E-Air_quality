@@ -1,2 +1,6 @@
 python-dotenv
 requests
+joblib
+pandas
+nunmpy
+scikit-learn
