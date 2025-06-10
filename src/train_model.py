@@ -9,6 +9,8 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 
+from imblearn.over_sampling import SMOTE
+
 # Loading in the data
 df = pd.read_csv("data/processed/pm25_labeled.csv")
 
@@ -30,12 +32,18 @@ x = df[cols]
 y = df["training_label"]
 x_train, x_test, y_train, y_test = train_test_split(x, y, stratify=y, test_size=0.2, random_state=42)
 
+x_train = x_train.dropna()
+y_train = y_train.loc[x_train.index]
+
 scaler = StandardScaler()
 x_train_scaled = scaler.fit_transform(x_train)
 x_test_scaled = scaler.fit_transform(x_test)
 
-forest_model = RandomForestClassifier(n_estimators=100, random_state=42)
-forest_model.fit(x_train_scaled, y_train)
+smote= SMOTE(random_state = 42)
+x_train_resampled, y_train_resampled = smote.fit_resample(x_train_scaled, y_train)
+
+forest_model = RandomForestClassifier(n_estimators=100, class_weight="balanced", random_state=42)
+forest_model.fit(x_train_resampled, y_train_resampled)
 
 # Evaulation...
 y_prediction = forest_model.predict(x_test_scaled)

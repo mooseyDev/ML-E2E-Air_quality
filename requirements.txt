@@ -4,3 +4,4 @@ joblib
 pandas
 nunmpy
 scikit-learn
+imbalanced-learn
