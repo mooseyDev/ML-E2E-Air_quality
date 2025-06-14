@@ -22,6 +22,8 @@ for entry in records:
         continue  
 
 df = pd.DataFrame(parsed)
+df = df[(df["pm25"] > 0) & (df["pm25"] <500)] # Removing outliers
+
 
 def classify_pm25(value):
     if value <= 12.0:
