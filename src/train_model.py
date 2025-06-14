@@ -6,8 +6,9 @@ import numpy as np
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.ensemble import RandomForestClassifier
+# from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix
+from xgboost import XGBClassifier
 
 from imblearn.over_sampling import SMOTE
 
@@ -42,17 +43,30 @@ x_test_scaled = scaler.fit_transform(x_test)
 smote= SMOTE(random_state = 42)
 x_train_resampled, y_train_resampled = smote.fit_resample(x_train_scaled, y_train)
 
-forest_model = RandomForestClassifier(n_estimators=100, class_weight="balanced", random_state=42)
-forest_model.fit(x_train_resampled, y_train_resampled)
+xgb_model = XGBClassifier(use_label_encoder= False, eval_metric = 'mlogloss', random_state= 42)
+xgb_model.fit(x_train_resampled, y_train_resampled)
 
-# Evaulation...
-y_prediction = forest_model.predict(x_test_scaled)
+# Evaluation...
+y_prediction = xgb_model.predict(x_test_scaled)
 print(f"Eval.: {classification_report(y_test, y_prediction)}")
 print(f"Confusion matrix: {confusion_matrix(y_test, y_prediction)}")
 
-os.makedirs("models", exist_ok = True)
-joblib.dump(forest_model, "models/forest_model.pkl")
+os.makedirs("models", exist_ok=True)
+joblib.dump(xgb_model, "models/xgb_model.pkl")
 joblib.dump(scaler, "models/skaler.pkl")
 joblib.dump(l, "models/label_encoder.pkl")
 
 print("success")
+
+
+# FOREST MODEL
+# forest_model = RandomForestClassifier(n_estimators=100, class_weight="balanced", random_state=42)
+# forest_model.fit(x_train_resampled, y_train_resampled)
+
+# # Evaulation...
+# y_prediction = forest_model.predict(x_test_scaled)
+# print(f"Eval.: {classification_report(y_test, y_prediction)}")
+# print(f"Confusion matrix: {confusion_matrix(y_test, y_prediction)}")
+
+# os.makedirs("models", exist_ok = True)
+ # joblib.dump(forest_model, "models/forest_model.pkl")

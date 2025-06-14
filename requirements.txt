@@ -5,3 +5,4 @@ pandas
 nunmpy
 scikit-learn
 imbalanced-learn
+xgboost
