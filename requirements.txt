@@ -6,3 +6,5 @@ nunmpy
 scikit-learn
 imbalanced-learn
 xgboost
+fastapi
+uvicorn
